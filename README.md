@@ -8,16 +8,10 @@ The MIPS simulator has a pipelined architecture, and the pipeline has the follow
 Full data forwarding is simulated and so bubbles are only required for data hazards
 that cannot be resolved by the addition of a forwarding path. In the case of such a data hazard, the
 processor stalls the instruction with the read-after-write (RAW) hazard in the ID stage by inserting bubbles
-for the minimum number of cycles until a forwarding path can get source data to the instruction. To do this, ID tracks the destination registers via static scoreboarding and cycles-until-available information for instructions
+for the minimum number of cycles until a forwarding path can get source data to the instruction. Static scoreboarding is used to do this; ID tracks the destination registers and cycles-until-available information for instructions
 later in the pipeline, so that it can detect hazards and insert the correct number of bubbles.
 
-The simulator also models pipeline stalls due to memory latency of a L1 data cache. The simulated data cache stores 1 KiB (1024 Bytes) of data in block sizes of 8 words (32 bytes). It is 4-way set associative, with a round-robin replacement policy and a write policy of write-back write-allocate. For simplicity, the cache has no write buffer: a store must be completely finished before the processor can proceed. Since the simulated cache is a data cache, only loads and stores access it; instruction fetches are assumed to hit in a perfect I-cache with immediate access (i.e., there is never a stall for an instruction fetch).
-
-The cache model calculates and reports the following statistics:
-* The total number of accesses, plus the number that were loads vs. stores
-* The total number of misses, plus the number caused by loads vs. stores
-* The number of writebacks
-* The hit ratio
+The simulator also models pipeline stalls due to memory latency of a L1 data cache. The simulated data cache stores 1 KiB (1024 bytes) of data in block sizes of 8 words (32 bytes). It is 4-way set associative, with a round-robin replacement policy and a write policy of write-back write-allocate. For simplicity, the cache has no write buffer: a store must be completely finished before the processor can proceed. Since the simulated cache is a data cache, only loads and stores access it; instruction fetches are assumed to hit in a perfect I-cache with immediate access (i.e., there is never a stall for an instruction fetch).
 
 The simulator also reports the following statistics at the end of the program:
 * The exact number of clock cycles it would take to execute the program on this CPU
@@ -25,4 +19,7 @@ The simulator also reports the following statistics at the end of the program:
 * The number of bubble cycles injected due to data dependencies
 * The number of flush cycles in the shadows of jumps and taken branches
 * The number of stall cycles due to cache/memory latency
-* The data cache statistics reported by the cache model
+* The total number of accesses, plus the number that were loads vs. stores
+* The total number of misses, plus the number caused by loads vs. stores
+* The number of writebacks
+* The hit ratio
